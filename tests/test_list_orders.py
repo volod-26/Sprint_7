@@ -1,15 +1,20 @@
 import requests
+import allure
+
+from config import ORDERS_ENDPOINT
 
 
-BASE_URL = "https://qa-scooter.praktikum-services.ru"
-
-
+@allure.feature("Список заказов")
 class TestListOrders:
     """Тесты для ручки «Список заказов»"""
 
+    @allure.step("Получить список заказов")
+    def get_orders(self):
+        return requests.get(ORDERS_ENDPOINT)
+
     def test_get_list_orders(self):
         """В тело ответа возвращается список заказов"""
-        response = requests.get(f"{BASE_URL}/api/v1/orders")
+        response = self.get_orders()
 
         assert response.status_code == 200
         assert "orders" in response.json()
