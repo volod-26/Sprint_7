@@ -35,12 +35,25 @@ def register_new_courier_and_return_login_password():
     return login_pass
 
 
-def delete_courier(login, password):
-    """Удаляет курьера по логину и паролю"""
-    login_response = requests.post(
+def create_courier(login, password, first_name):
+    """Создаёт курьера через API"""
+    return requests.post(
+        COURIER_ENDPOINT,
+        data={"login": login, "password": password, "firstName": first_name}
+    )
+
+
+def login_courier(login, password):
+    """Авторизует курьера через API"""
+    return requests.post(
         COURIER_LOGIN_ENDPOINT,
         data={"login": login, "password": password}
     )
+
+
+def delete_courier(login, password):
+    """Удаляет курьера по логину и паролю"""
+    login_response = login_courier(login, password)
     if login_response.status_code == 200:
         courier_id = login_response.json()["id"]
         requests.delete(f"{COURIER_ENDPOINT}/{courier_id}")

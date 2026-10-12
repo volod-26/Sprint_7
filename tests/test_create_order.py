@@ -10,23 +10,23 @@ from data import ORDER_DATA, COLORS
 class TestCreateOrder:
     """Тесты для ручки «Создание заказа»"""
 
-    @allure.step("Создать заказ с цветами {color}")
-    def create_order(self, color):
-        payload = ORDER_DATA.copy()
-        payload["color"] = color
-        return requests.post(ORDERS_ENDPOINT, json=payload)
-
     @pytest.mark.parametrize("color", COLORS)
     def test_create_order_with_colors(self, color):
         """Заказ можно создать с разными вариантами цветов"""
-        response = self.create_order(color)
+        payload = ORDER_DATA.copy()
+        payload["color"] = color
+
+        response = requests.post(ORDERS_ENDPOINT, json=payload)
 
         assert response.status_code == 201
         assert "track" in response.json()
 
     def test_create_order_returns_track(self):
         """Тело ответа содержит track"""
-        response = self.create_order(["BLACK"])
+        payload = ORDER_DATA.copy()
+        payload["color"] = ["BLACK"]
+
+        response = requests.post(ORDERS_ENDPOINT, json=payload)
 
         assert response.status_code == 201
         assert "track" in response.json()
